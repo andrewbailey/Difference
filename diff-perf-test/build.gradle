@@ -1,0 +1,63 @@
+apply plugin: 'com.android.library'
+apply plugin: "androidx.benchmark"
+apply plugin: 'kotlin-android'
+
+android {
+    compileSdkVersion 29
+
+    compileOptions {
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
+    }
+
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+
+    defaultConfig {
+        minSdkVersion 21
+        targetSdkVersion 29
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner 'androidx.benchmark.junit4.AndroidBenchmarkRunner'
+        testInstrumentationRunnerArgument 'androidx.benchmark.suppressErrors', 'UNLOCKED'
+    }
+
+    signingConfigs {
+        release {
+            storeFile file("signing-key.jks")
+            storePassword "password"
+            keyAlias "key0"
+            keyPassword "password"
+
+            // Optional, specify signing versions used
+            v1SigningEnabled true
+            v2SigningEnabled true
+        }
+    }
+
+    testBuildType = "release"
+    buildTypes {
+        debug {
+            debuggable false
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "benchmark-proguard-rules.pro"
+        }
+        release {
+            isDefault = true
+            debuggable false
+            signingConfig signingConfigs.release
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation project(':diff')
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    testImplementation 'junit:junit:4.13'
+    androidTestImplementation 'androidx.test:runner:1.2.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation "androidx.benchmark:benchmark-junit4:1.0.0"
+}

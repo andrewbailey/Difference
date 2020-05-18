@@ -9,7 +9,9 @@ buildscript {
     }
 
     dependencies {
+        classpath 'com.android.tools.build:gradle:3.6.3'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'androidx.benchmark:benchmark-gradle-plugin:1.0.0'
         classpath "org.jlleitschuh.gradle:ktlint-gradle:9.1.1"
     }
 }
@@ -18,6 +20,7 @@ allprojects {
     apply plugin: "org.jlleitschuh.gradle.ktlint"
 
     repositories {
+        google()
         jcenter()
     }
 
