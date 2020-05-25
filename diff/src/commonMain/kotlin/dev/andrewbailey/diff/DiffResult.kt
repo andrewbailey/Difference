@@ -1,6 +1,6 @@
 package dev.andrewbailey.diff
 
-class DiffResult<T>(
+class DiffResult<T> internal constructor(
     val operations: List<DiffOperation<T>>
 ) {
 
@@ -14,7 +14,9 @@ class DiffResult<T>(
             insert = insert,
             move = move,
             removeRange = { start, end ->
-                (start until end).forEach(remove)
+                repeat(times = end - start) {
+                    remove(start)
+                }
             },
             insertAll = { items, index ->
                 items.forEachIndexed { itemIndex, item ->
@@ -69,5 +71,14 @@ class DiffResult<T>(
             }
         }
     }
+
+    override fun equals(other: Any?) =
+        other is DiffResult<*> && other.operations == operations
+
+    override fun hashCode() =
+        operations.hashCode()
+
+    override fun toString() =
+        "DiffResult(operations = $operations)"
 
 }
