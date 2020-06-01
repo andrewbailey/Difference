@@ -3,7 +3,8 @@ package dev.andrewbailey.diff
 sealed class DiffOperation<T> {
 
     data class Remove<T>(
-        val index: Int
+        val index: Int,
+        val item: T
     ) : DiffOperation<T>()
 
     data class RemoveRange<T>(

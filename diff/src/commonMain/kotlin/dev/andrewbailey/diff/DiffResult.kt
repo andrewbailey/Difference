@@ -9,7 +9,7 @@ class DiffResult<T> internal constructor(
         crossinline insert: (item: T, index: Int) -> Unit,
         crossinline move: (oldIndex: Int, newIndex: Int) -> Unit
     ) {
-        return applyDiff(
+        applyDiff(
             remove = remove,
             insert = insert,
             move = move,
@@ -27,12 +27,12 @@ class DiffResult<T> internal constructor(
                 when {
                     newIndex < oldIndex -> {
                         (0 until count).forEach { item ->
-                            move(oldIndex, newIndex + item)
+                            move(oldIndex + item, newIndex + item)
                         }
                     }
                     newIndex > oldIndex -> {
-                        (0 until count).forEach { item ->
-                            move(oldIndex + item, newIndex)
+                        repeat(count) {
+                            move(oldIndex, newIndex)
                         }
                     }
                 }
