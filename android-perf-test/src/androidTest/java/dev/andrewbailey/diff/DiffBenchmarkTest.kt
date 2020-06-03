@@ -15,85 +15,59 @@ class DiffBenchmarkTest {
     val benchmarkRule = BenchmarkRule()
 
     @Test
-    fun verySmallDiff() {
-        val original = generateList(
-            numberOfItems = 100,
-            seed = 4459894567797046261
-        )
-
-        val updated = generateModifiedList(
-            originalData = original,
-            numberOfOperations = 10,
-            seed = 4714230579337615937
-        )
-
-        benchmarkRule.measureRepeated {
-            DiffGenerator.generateDiff(
-                original = original,
-                updated = updated
-            )
-        }
-    }
+    fun verySmallDiffWithoutMoves() = runBenchmarkScenario(
+        seed = 4459894567797046261,
+        numberOfItems = 100,
+        numberOfOperations = 10,
+        detectMoves = false
+    )
 
     @Test
-    fun smallDiff() {
-        val original = generateList(
-            numberOfItems = 1000,
-            seed = -5791837575014754264
-        )
-
-        val updated = generateModifiedList(
-            originalData = original,
-            numberOfOperations = 100,
-            seed = -2363742209552295760
-        )
-
-        benchmarkRule.measureRepeated {
-            DiffGenerator.generateDiff(
-                original = original,
-                updated = updated
-            )
-        }
-    }
+    fun smallDiffWithoutMoves() = runBenchmarkScenario(
+        seed = -5791837575014754264,
+        numberOfItems = 1000,
+        numberOfOperations = 100,
+        detectMoves = false
+    )
 
     @Test
-    fun mediumDiff() {
-        val original = generateList(
-            numberOfItems = 5000,
-            seed = -797670750388632780
-        )
-
-        val updated = generateModifiedList(
-            originalData = original,
-            numberOfOperations = 500,
-            seed = -5784637514750304832
-        )
-
-        benchmarkRule.measureRepeated {
-            DiffGenerator.generateDiff(
-                original = original,
-                updated = updated
-            )
-        }
-    }
+    fun mediumDiffWithoutMoves() = runBenchmarkScenario(
+        seed = -797670750388632780,
+        numberOfItems = 5000,
+        numberOfOperations = 500,
+        detectMoves = false
+    )
 
     @Test
-    fun largeDiff() {
+    fun largeDiffWithoutMoves() = runBenchmarkScenario(
+        seed = 8208385239328551378,
+        numberOfItems = 10000,
+        numberOfOperations = 1000,
+        detectMoves = false
+    )
+
+    private fun runBenchmarkScenario(
+        seed: Long,
+        numberOfItems: Int,
+        numberOfOperations: Int,
+        detectMoves: Boolean
+    ) {
         val original = generateList(
-            numberOfItems = 10000,
-            seed = 8208385239328551378
+            numberOfItems = numberOfItems,
+            seed = seed
         )
 
         val updated = generateModifiedList(
             originalData = original,
-            numberOfOperations = 1000,
-            seed = 3794317317428887769
+            numberOfOperations = numberOfOperations,
+            seed = seed
         )
 
         benchmarkRule.measureRepeated {
             DiffGenerator.generateDiff(
                 original = original,
-                updated = updated
+                updated = updated,
+                detectMoves = detectMoves
             )
         }
     }
