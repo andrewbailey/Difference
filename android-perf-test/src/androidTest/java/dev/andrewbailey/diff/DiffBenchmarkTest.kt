@@ -23,11 +23,27 @@ class DiffBenchmarkTest {
     )
 
     @Test
+    fun verySmallDiffWithMoves() = runBenchmarkScenario(
+        seed = 4459894567797046261,
+        numberOfItems = 100,
+        numberOfOperations = 10,
+        detectMoves = true
+    )
+
+    @Test
     fun smallDiffWithoutMoves() = runBenchmarkScenario(
         seed = -5791837575014754264,
         numberOfItems = 1000,
         numberOfOperations = 100,
         detectMoves = false
+    )
+
+    @Test
+    fun smallDiffWithMoves() = runBenchmarkScenario(
+        seed = -5791837575014754264,
+        numberOfItems = 1000,
+        numberOfOperations = 100,
+        detectMoves = true
     )
 
     @Test
@@ -39,11 +55,27 @@ class DiffBenchmarkTest {
     )
 
     @Test
+    fun mediumDiffWithMoves() = runBenchmarkScenario(
+        seed = -797670750388632780,
+        numberOfItems = 5000,
+        numberOfOperations = 500,
+        detectMoves = true
+    )
+
+    @Test
     fun largeDiffWithoutMoves() = runBenchmarkScenario(
         seed = 8208385239328551378,
         numberOfItems = 10000,
         numberOfOperations = 1000,
         detectMoves = false
+    )
+
+    @Test
+    fun largeDiffWithMoves() = runBenchmarkScenario(
+        seed = 8208385239328551378,
+        numberOfItems = 10000,
+        numberOfOperations = 1000,
+        detectMoves = true
     )
 
     private fun runBenchmarkScenario(
