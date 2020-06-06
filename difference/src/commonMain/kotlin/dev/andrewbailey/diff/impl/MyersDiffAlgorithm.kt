@@ -1,7 +1,6 @@
 package dev.andrewbailey.diff.impl
 
 import dev.andrewbailey.diff.impl.MyersDiffOperation.*
-import kotlin.math.abs
 import kotlin.math.ceil
 
 /**
@@ -213,35 +212,6 @@ internal class MyersDiffAlgorithm<T>(
         }
 
         return null
-    }
-
-    private fun Int.isEven() = abs(this) % 2 == 0
-    private fun Int.isOdd() = abs(this) % 2 == 1
-
-    private data class Point(val x: Int, val y: Int)
-
-    private data class Snake(
-        val start: Point,
-        val end: Point
-    )
-
-    private data class Region(
-        val left: Int,
-        val top: Int,
-        val right: Int,
-        val bottom: Int
-    ) {
-        val width: Int
-            get() = right - left
-
-        val height: Int
-            get() = bottom - top
-
-        val size: Int
-            get() = width + height
-
-        val delta: Int
-            get() = width - height
     }
 
 }
