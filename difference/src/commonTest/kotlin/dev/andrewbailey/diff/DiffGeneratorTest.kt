@@ -11,7 +11,7 @@ class DiffGeneratorTest {
         val original = emptyList<String>()
         val updated = emptyList<String>()
 
-        val diff = DiffGenerator.generateDiff(original, updated)
+        val diff = DiffGenerator.generateDiff(original, updated, false)
 
         assertEquals(
             message = "The returned diff did not match the expected value.",
@@ -31,7 +31,7 @@ class DiffGeneratorTest {
         val original = emptyList<String>()
         val updated = listOf("A", "B", "C")
 
-        val diff = DiffGenerator.generateDiff(original, updated)
+        val diff = DiffGenerator.generateDiff(original, updated, false)
 
         assertEquals(
             message = "The returned diff did not match the expected value.",
@@ -56,7 +56,7 @@ class DiffGeneratorTest {
         val original = listOf("A", "B", "C")
         val updated = emptyList<String>()
 
-        val diff = DiffGenerator.generateDiff(original, updated)
+        val diff = DiffGenerator.generateDiff(original, updated, false)
 
         assertEquals(
             message = "The returned diff did not match the expected value.",
@@ -81,7 +81,7 @@ class DiffGeneratorTest {
         val original = listOf("A", "B", "C")
         val updated = listOf("A", "B", "C")
 
-        val diff = DiffGenerator.generateDiff(original, updated)
+        val diff = DiffGenerator.generateDiff(original, updated, false)
 
         assertEquals(
             message = "The returned diff did not match the expected value.",

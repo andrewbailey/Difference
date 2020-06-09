@@ -4,12 +4,12 @@ import dev.andrewbailey.diff.DiffOperation.*
 import dev.andrewbailey.diff.impl.MyersDiffAlgorithm
 import dev.andrewbailey.diff.impl.MyersDiffOperation.*
 
-object DiffGenerator {
+internal object DiffGenerator {
 
     fun <T> generateDiff(
         original: List<T>,
         updated: List<T>,
-        detectMoves: Boolean = true
+        detectMoves: Boolean
     ): DiffResult<T> {
         val diff = MyersDiffAlgorithm(original, updated)
             .generateDiff()

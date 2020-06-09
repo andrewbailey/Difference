@@ -96,7 +96,7 @@ class DiffBenchmarkTest {
         )
 
         benchmarkRule.measureRepeated {
-            DiffGenerator.generateDiff(
+            differenceOf(
                 original = original,
                 updated = updated,
                 detectMoves = detectMoves
