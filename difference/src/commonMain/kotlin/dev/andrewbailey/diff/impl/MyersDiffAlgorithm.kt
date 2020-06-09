@@ -49,10 +49,10 @@ internal class MyersDiffAlgorithm<T>(
     }
 
     private fun walkSnakes(): List<Region> {
-        val path = findPath(Region(0, 0, original.size, updated.size)) ?: return emptyList()
+        val path = findPath()
 
         val regions = mutableListOf<Region>()
-        path.windowed(2).forEach { (p1, p2) ->
+        path.forEach { (p1, p2) ->
             var (x1, y1) = walkDiagonal(p1, p2, regions)
             val (x2, y2) = p2
 
@@ -91,21 +91,50 @@ internal class MyersDiffAlgorithm<T>(
         return Point(x1, y1)
     }
 
-    private fun findPath(
-        region: Region
-    ): List<Point>? {
-        val snake = midpoint(region) ?: return null
+    private fun findPath(): List<Snake> {
+        val snakes = mutableListOf<Snake>()
+        val stack = mutableListOf<Region>()
 
-        val (start, finish) = snake
-        val head = findPath(
-            region = region.copy(right = start.x, bottom = start.y)
+        stack.push(
+            Region(
+                left = 0,
+                top = 0,
+                right = original.size,
+                bottom = updated.size
+            )
         )
 
-        val tail = findPath(
-            region = region.copy(left = finish.x, top = finish.y)
-        )
+        while (stack.isNotEmpty()) {
+            val region = stack.pop()
 
-        return (head ?: listOf(start)) + (tail ?: listOf(finish))
+            val snake = midpoint(region)
+            if (snake != null) {
+                snakes += snake
+                val (start, finish) = snake
+
+                stack.push(region.copy(
+                    right = start.x,
+                    bottom = start.y
+                ))
+
+                stack.push(region.copy(
+                    left = finish.x,
+                    top = finish.y
+                ))
+            }
+        }
+
+        snakes.sortWith(object : Comparator<Snake> {
+            override fun compare(a: Snake, b: Snake): Int {
+                return if (a.start.x == b.start.x) {
+                    a.start.y - b.start.y
+                } else {
+                    a.start.x - b.start.x
+                }
+            }
+        })
+
+        return snakes
     }
 
     private fun midpoint(
