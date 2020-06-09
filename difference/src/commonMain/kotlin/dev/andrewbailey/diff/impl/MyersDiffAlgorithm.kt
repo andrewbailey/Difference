@@ -136,7 +136,10 @@ internal class MyersDiffAlgorithm<T>(
         vBackwards: CircularIntArray,
         depth: Int
     ): Snake? {
-        for (k in (-depth..depth step 2).reversed()) {
+        // This loop is effectively `for (k in (-depth..depth step 2).reversed())`, but avoids
+        // allocating a Range object.
+        var k = depth
+        while (k >= -depth) {
             val c = k - region.delta
 
             var endX: Int
@@ -167,6 +170,8 @@ internal class MyersDiffAlgorithm<T>(
                     end = Point(endX, endY)
                 )
             }
+
+            k -= 2
         }
 
         return null
@@ -178,7 +183,10 @@ internal class MyersDiffAlgorithm<T>(
         vBackwards: CircularIntArray,
         depth: Int
     ): Snake? {
-        for (c in (-depth..depth step 2).reversed()) {
+        // This loop is effectively `for (c in (-depth..depth step 2).reversed())`, but avoids
+        // allocating a Range object.
+        var c = depth
+        while (c >= -depth) {
             val k = c + region.delta
 
             val endY: Int
@@ -209,6 +217,8 @@ internal class MyersDiffAlgorithm<T>(
                     end = Point(endX, endY)
                 )
             }
+
+            c -= 2
         }
 
         return null
