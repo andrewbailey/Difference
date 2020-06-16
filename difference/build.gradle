@@ -5,6 +5,18 @@ kotlin {
         withJava()
     }
 
+    js {
+        browser()
+        nodejs()
+    }
+
+    iosX64()
+    iosArm64()
+    linuxX64()
+    macosX64()
+    mingwX86()
+    mingwX64()
+
     sourceSets {
         commonMain {
             dependencies {
@@ -26,6 +38,17 @@ kotlin {
             dependencies {
                 implementation kotlin('test')
                 implementation kotlin('test-junit')
+            }
+        }
+        jsMain {
+            dependencies {
+                implementation kotlin('stdlib-js')
+            }
+        }
+        jsTest {
+            dependencies {
+                implementation kotlin('test')
+                implementation kotlin('test-js')
             }
         }
         all {
