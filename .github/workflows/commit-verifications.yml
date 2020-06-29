@@ -1,4 +1,4 @@
-name: Diff CI
+name: Difference CI
 
 on: [push]
 
