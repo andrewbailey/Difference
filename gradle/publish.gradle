@@ -1,0 +1,52 @@
+apply plugin: 'maven-publish'
+
+publishing {
+    publications.all {
+        pom.withXml {
+            def root = asNode()
+
+            root.children().last() + {
+                resolveStrategy = Closure.DELEGATE_FIRST
+
+                description POM_DESCRIPTION
+                name POM_NAME
+                url POM_URL
+                licenses {
+                    license {
+                        name POM_LICENCE_NAME
+                        url POM_LICENCE_URL
+                        distribution POM_LICENCE_DIST
+                    }
+                }
+                scm {
+                    url POM_SCM_URL
+                    connection POM_SCM_CONNECTION
+                    developerConnection POM_SCM_DEV_CONNECTION
+                }
+                developers {
+                    developer {
+                        id POM_DEVELOPER_ID
+                        name POM_DEVELOPER_NAME
+                    }
+                }
+            }
+        }
+    }
+
+    publications {
+        kotlinMultiplatform {
+            artifactId = POM_ARTIFACT_ID
+        }
+    }
+
+    repositories {
+        maven {
+            name 'sonatype'
+            url 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
+            credentials {
+                username System.env.SONATYPE_USERNAME
+                password System.env.SONATYPE_PASSWORD
+            }
+        }
+    }
+}

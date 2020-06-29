@@ -3,6 +3,9 @@ apply plugin: 'org.jetbrains.kotlin.multiplatform'
 kotlin {
     jvm {
         withJava()
+        mavenPublication {
+            artifactId = 'difference-jvm'
+        }
     }
 
     js {
@@ -10,12 +13,36 @@ kotlin {
         nodejs()
     }
 
-    iosX64()
-    iosArm64()
-    linuxX64()
-    macosX64()
-    mingwX86()
-    mingwX64()
+    iosX64 {
+        mavenPublication {
+            artifactId = 'difference-ios-x64'
+        }
+    }
+    iosArm64 {
+        mavenPublication {
+            artifactId = 'difference-ios-arm64'
+        }
+    }
+    linuxX64 {
+        mavenPublication {
+            artifactId = 'difference-linux-x64'
+        }
+    }
+    macosX64 {
+        mavenPublication {
+            artifactId = 'difference-macos-x64'
+        }
+    }
+    mingwX86 {
+        mavenPublication {
+            artifactId = 'difference-mingw-x86'
+        }
+    }
+    mingwX64 {
+        mavenPublication {
+            artifactId = 'difference-mingw-x64'
+        }
+    }
 
     sourceSets {
         commonMain {
@@ -56,3 +83,5 @@ kotlin {
         }
     }
 }
+
+apply from: "$rootDir/gradle/publish.gradle"
