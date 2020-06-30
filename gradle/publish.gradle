@@ -38,6 +38,10 @@ publishing {
         kotlinMultiplatform {
             artifactId = POM_ARTIFACT_ID
         }
+
+        jvm {
+            artifact(javadocJar)
+        }
     }
 
     repositories {

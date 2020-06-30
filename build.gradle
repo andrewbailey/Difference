@@ -13,11 +13,13 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'androidx.benchmark:benchmark-gradle-plugin:1.0.0'
         classpath "org.jlleitschuh.gradle:ktlint-gradle:9.1.1"
+        classpath "org.jetbrains.dokka:dokka-gradle-plugin:0.10.1"
     }
 }
 
 allprojects {
     apply plugin: "org.jlleitschuh.gradle.ktlint"
+    apply plugin: 'org.jetbrains.dokka'
 
     group = GROUP
     version = VERSION_NAME
@@ -35,5 +37,29 @@ allprojects {
             "no-blank-line-before-rbrace",
             "no-wildcard-imports",
         ]
+    }
+
+    dokka {
+        outputDirectory = "$rootDir/docs/1.x"
+        outputFormat = 'html'
+        multiplatform {
+            global {
+                perPackageOption {
+                    prefix = "dev.andrewbailey.difference"
+                    suppress = true
+                }
+            }
+            jvm {}
+        }
+    }
+
+    task dokkaJavadoc(type: org.jetbrains.dokka.gradle.DokkaTask) {
+        outputFormat = 'html'
+        outputDirectory = "$buildDir/javadoc"
+    }
+
+    task javadocJar(type: Jar, dependsOn: dokkaJavadoc) {
+        classifier = 'javadoc'
+        from "$buildDir/javadoc"
     }
 }
