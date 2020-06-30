@@ -23,6 +23,7 @@ jobs:
           env:
               SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
               SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+              SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
 
     publish-windows:
         runs-on: windows-latest
@@ -36,9 +37,11 @@ jobs:
           env:
               SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
               SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+              SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
 
         - name: Publish Windows x86 library to Maven
           run: ./gradlew publishMingwX86PublicationToSonatypeRepository
           env:
               SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
               SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+              SIGNING_KEY: ${{ secrets.SIGNING_KEY }}

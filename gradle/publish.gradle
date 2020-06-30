@@ -1,4 +1,5 @@
 apply plugin: 'maven-publish'
+apply plugin: 'signing'
 
 publishing {
     publications.all {
@@ -48,5 +49,14 @@ publishing {
                 password System.env.SONATYPE_PASSWORD
             }
         }
+    }
+}
+
+signing {
+    def signingKey = System.env.SIGNING_KEY
+    def signingPassword = ""
+    useInMemoryPgpKeys(signingKey, signingPassword)
+    publishing.publications.all {
+        sign it
     }
 }
