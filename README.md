@@ -7,6 +7,29 @@ Behind the scenes, Difference uses Eugene Myer's Differencing Algorithm.
 This is the same algorithm used by Android's [DiffUtil](https://developer.android.com/reference/androidx/recyclerview/widget/DiffUtil) class, which you may be familiar with if you're an Android developer.
 Difference is very similar to Android's DiffUtil, but is completely platform agnostic and has more receiver-agnostic APIs to consume the diff result.
 
+## Setup
+Gradle can automatically resolve which variation of Difference is appropriate for the platform and architecture you're compiling for.
+To use the universal dependency, add this dependency to your module's `build.gradle`:
+
+```groovy
+dependencies {
+    implementation 'dev.andrewbailey.difference:difference:1.0.0'
+}
+```
+
+If you want to explicitly specify which platform variant of the library you want to depend on, you can use any of the following dependencies as appropriate:
+
+```
+dev.andrewbailey.difference:difference-jvm:1.0.0
+dev.andrewbailey.difference:difference-js:1.0.0
+dev.andrewbailey.difference:difference-linux-x64:1.0.0
+dev.andrewbailey.difference:difference-macos-x64:1.0.0
+dev.andrewbailey.difference:difference-ios-x64:1.0.0
+dev.andrewbailey.difference:difference-ios-arm64:1.0.0
+dev.andrewbailey.difference:difference-mingw-x86:1.0.0
+dev.andrewbailey.difference:difference-mingw-x64:1.0.0
+```
+
 ## Generating a diff
 To generate a diff, you can call `differenceOf` with the following arguments:
 
