@@ -40,7 +40,7 @@ publishing {
         }
 
         jvm {
-            artifact(javadocJar)
+//            artifact(javadocJar)
         }
     }
 
@@ -56,11 +56,11 @@ publishing {
     }
 }
 
-signing {
-    def signingKey = System.env.SIGNING_KEY
-    def signingPassword = ""
-    useInMemoryPgpKeys(signingKey, signingPassword)
-    publishing.publications.all {
-        sign it
-    }
-}
+//signing {
+//    def signingKey = System.env.SIGNING_KEY
+//    def signingPassword = ""
+//    useInMemoryPgpKeys(signingKey, signingPassword)
+//    publishing.publications.all {
+//        sign it
+//    }
+//}
