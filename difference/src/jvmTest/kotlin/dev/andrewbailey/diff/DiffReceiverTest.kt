@@ -48,9 +48,7 @@ class DiffReceiverTest {
         return List(500) { random.nextInt().toString() }
     }
 
-    private fun generateModifiedList(
-        originalData: List<String>
-    ): List<String> {
+    private fun generateModifiedList(originalData: List<String>): List<String> {
         val random = Random(3260128955430943624)
         val modifiedList = originalData.toMutableList()
 
@@ -81,5 +79,4 @@ class DiffReceiverTest {
 
         return modifiedList
     }
-
 }

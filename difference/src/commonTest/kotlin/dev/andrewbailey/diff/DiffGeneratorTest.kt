@@ -1,6 +1,11 @@
 package dev.andrewbailey.diff
 
-import dev.andrewbailey.diff.DiffOperation.*
+import dev.andrewbailey.diff.DiffOperation.Add
+import dev.andrewbailey.diff.DiffOperation.AddAll
+import dev.andrewbailey.diff.DiffOperation.Move
+import dev.andrewbailey.diff.DiffOperation.MoveRange
+import dev.andrewbailey.diff.DiffOperation.Remove
+import dev.andrewbailey.diff.DiffOperation.RemoveRange
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -35,12 +40,14 @@ class DiffGeneratorTest {
 
         assertEquals(
             message = "The returned diff did not match the expected value.",
-            expected = DiffResult(listOf(
-                AddAll(
-                    index = 0,
-                    items = listOf("A", "B", "C")
+            expected = DiffResult(
+                listOf(
+                    AddAll(
+                        index = 0,
+                        items = listOf("A", "B", "C")
+                    )
                 )
-            )),
+            ),
             actual = diff
         )
 
@@ -60,12 +67,14 @@ class DiffGeneratorTest {
 
         assertEquals(
             message = "The returned diff did not match the expected value.",
-            expected = DiffResult(listOf(
-                RemoveRange(
-                    startIndex = 0,
-                    endIndex = 3
+            expected = DiffResult(
+                listOf(
+                    RemoveRange(
+                        startIndex = 0,
+                        endIndex = 3
+                    )
                 )
-            )),
+            ),
             actual = diff
         )
 
@@ -109,14 +118,16 @@ class DiffGeneratorTest {
 
         assertEquals(
             message = "The returned diff did not match the expected value.",
-            expected = DiffResult(listOf(
-                Remove(index = 0, item = 'A'),
-                RemoveRange(startIndex = 2, endIndex = 5),
-                Add(index = 2, item = 'A'),
-                Add(index = 5, item = 'I'),
-                Remove(index = 7, item = 'K'),
-                AddAll(index = 8, items = "MNO".toList())
-            )),
+            expected = DiffResult(
+                listOf(
+                    Remove(index = 0, item = 'A'),
+                    RemoveRange(startIndex = 2, endIndex = 5),
+                    Add(index = 2, item = 'A'),
+                    Add(index = 5, item = 'I'),
+                    Remove(index = 7, item = 'K'),
+                    AddAll(index = 8, items = "MNO".toList())
+                )
+            ),
             actual = diff
         )
 
@@ -140,16 +151,18 @@ class DiffGeneratorTest {
 
         assertEquals(
             message = "The returned diff did not match the expected value.",
-            expected = DiffResult(listOf(
-                Move(
-                    fromIndex = 0,
-                    toIndex = 2
-                ),
-                Move(
-                    fromIndex = 5,
-                    toIndex = 1
+            expected = DiffResult(
+                listOf(
+                    Move(
+                        fromIndex = 0,
+                        toIndex = 2
+                    ),
+                    Move(
+                        fromIndex = 5,
+                        toIndex = 1
+                    )
                 )
-            )),
+            ),
             actual = diff
         )
 
@@ -173,13 +186,15 @@ class DiffGeneratorTest {
 
         assertEquals(
             message = "The returned diff did not match the expected value.",
-            expected = DiffResult(listOf(
-                MoveRange(
-                    fromIndex = 3,
-                    toIndex = 12,
-                    itemCount = 3
+            expected = DiffResult(
+                listOf(
+                    MoveRange(
+                        fromIndex = 3,
+                        toIndex = 12,
+                        itemCount = 3
+                    )
                 )
-            )),
+            ),
             actual = diff
         )
 
@@ -203,13 +218,15 @@ class DiffGeneratorTest {
 
         assertEquals(
             message = "The returned diff did not match the expected value.",
-            expected = DiffResult(listOf(
-                MoveRange(
-                    fromIndex = 7,
-                    toIndex = 0,
-                    itemCount = 3
+            expected = DiffResult(
+                listOf(
+                    MoveRange(
+                        fromIndex = 7,
+                        toIndex = 0,
+                        itemCount = 3
+                    )
                 )
-            )),
+            ),
             actual = diff
         )
 
@@ -233,20 +250,22 @@ class DiffGeneratorTest {
 
         assertEquals(
             message = "The returned diff did not match the expected value.",
-            expected = DiffResult(listOf(
-                Move(
-                    fromIndex = 3,
-                    toIndex = 0
-                ),
-                Move(
-                    fromIndex = 4,
-                    toIndex = 8
-                ),
-                Move(
-                    fromIndex = 4,
-                    toIndex = 12
+            expected = DiffResult(
+                listOf(
+                    Move(
+                        fromIndex = 3,
+                        toIndex = 0
+                    ),
+                    Move(
+                        fromIndex = 4,
+                        toIndex = 8
+                    ),
+                    Move(
+                        fromIndex = 4,
+                        toIndex = 12
+                    )
                 )
-            )),
+            ),
             actual = diff
         )
 
@@ -270,28 +289,30 @@ class DiffGeneratorTest {
 
         assertEquals(
             message = "The returned diff did not match the expected value.",
-            expected = DiffResult(listOf(
-                Move(
-                    fromIndex = 6,
-                    toIndex = 0
-                ),
-                Move(
-                    fromIndex = 3,
-                    toIndex = 10
-                ),
-                Add(
-                    index = 4,
-                    item = 12
-                ),
-                Remove(
-                    index = 6,
-                    item = 3
-                ),
-                Add(
-                    index = 6,
-                    item = 15
+            expected = DiffResult(
+                listOf(
+                    Move(
+                        fromIndex = 6,
+                        toIndex = 0
+                    ),
+                    Move(
+                        fromIndex = 3,
+                        toIndex = 10
+                    ),
+                    Add(
+                        index = 4,
+                        item = 12
+                    ),
+                    Remove(
+                        index = 6,
+                        item = 3
+                    ),
+                    Add(
+                        index = 6,
+                        item = 15
+                    )
                 )
-            )),
+            ),
             actual = diff
         )
 
@@ -302,8 +323,8 @@ class DiffGeneratorTest {
         )
     }
 
-    private fun <T> applyDiff(original: List<T>, diff: DiffResult<T>): List<T> {
-        return original.toMutableList().apply {
+    private fun <T> applyDiff(original: List<T>, diff: DiffResult<T>): List<T> =
+        original.toMutableList().apply {
             diff.applyDiff(
                 remove = { index -> removeAt(index) },
                 insert = { item, index -> add(index, item) },
@@ -319,6 +340,4 @@ class DiffGeneratorTest {
                 }
             )
         }
-    }
-
 }
