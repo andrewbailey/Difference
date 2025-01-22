@@ -7,7 +7,7 @@ import kotlin.test.assertEquals
 class DiffGeneratorTest {
 
     @Test
-    fun `generateDiff with empty input returns empty result`() {
+    fun generateDiff_withEmptyInput_returnsEmptyResult() {
         val original = emptyList<String>()
         val updated = emptyList<String>()
 
@@ -27,7 +27,7 @@ class DiffGeneratorTest {
     }
 
     @Test
-    fun `generateDiff with empty start returns additions`() {
+    fun generateDiff_withEmptyStart_returnsAdditions() {
         val original = emptyList<String>()
         val updated = listOf("A", "B", "C")
 
@@ -52,7 +52,7 @@ class DiffGeneratorTest {
     }
 
     @Test
-    fun `generateDiff with empty end returns deletions`() {
+    fun generateDiff_withEmptyEnd_returnsDeletions() {
         val original = listOf("A", "B", "C")
         val updated = emptyList<String>()
 
@@ -77,7 +77,7 @@ class DiffGeneratorTest {
     }
 
     @Test
-    fun `generateDiff with same start and end returns empty diff`() {
+    fun generateDiff_withSameStartAndEnd_returnsEmptyDiff() {
         val original = listOf("A", "B", "C")
         val updated = listOf("A", "B", "C")
 
@@ -97,7 +97,7 @@ class DiffGeneratorTest {
     }
 
     @Test
-    fun `generateDiff without moves calculates complex diff`() {
+    fun generateDiff_withoutMoves_calculatesComplexDiff() {
         val original = "ABCDEFGHJKLPQR".toList()
         val updated = "BCAGHIJLMNOPQR".toList()
 
@@ -128,7 +128,7 @@ class DiffGeneratorTest {
     }
 
     @Test
-    fun `generateDiff detects forwards and backwards movements`() {
+    fun generateDiff_detectsForwardsAndBackwardsMovements() {
         val original = "CADEFB".toList()
         val updated = "ABCDEF".toList()
 
@@ -161,7 +161,7 @@ class DiffGeneratorTest {
     }
 
     @Test
-    fun `generateDiff detects move forwards sequences`() {
+    fun generateDiff_detectsMoveForwardsSequences() {
         val original = "ABCDEFGHIJKL".toList()
         val updated = "ABCGHIJKLDEF".toList()
 
@@ -191,7 +191,7 @@ class DiffGeneratorTest {
     }
 
     @Test
-    fun `generateDiff detects move backwards sequences`() {
+    fun generateDiff_DetectsMoveBackwardsSequences() {
         val original = "ABCDEFGHIJKL".toList()
         val updated = "HIJABCDEFGKL".toList()
 
@@ -221,7 +221,7 @@ class DiffGeneratorTest {
     }
 
     @Test
-    fun `generateDiff detects adjacent moves to different destinations`() {
+    fun generateDiff_DetectsAdjacentMovesToDifferentDestinations() {
         val original = "ABCDEFGHIJKL".toList()
         val updated = "DABCGHEIJKLF".toList()
 
@@ -258,7 +258,7 @@ class DiffGeneratorTest {
     }
 
     @Test
-    fun `generateDiff with moves excludes opposite operations from merging`() {
+    fun generateDiff_withMoves_excludesOppositeOperationsFromMerging() {
         val original = listOf(3, 2, 3, 0, 0, 3, 1, 0, 1, 2)
         val updated = listOf(1, 3, 2, 0, 12, 0, 15, 0, 1, 2, 3)
 

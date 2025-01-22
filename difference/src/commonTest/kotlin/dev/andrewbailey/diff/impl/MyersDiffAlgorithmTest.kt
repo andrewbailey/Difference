@@ -7,7 +7,7 @@ import kotlin.test.assertEquals
 class MyersDiffAlgorithmTest {
 
     @Test
-    fun `generateDiff with empty inputs returns empty sequence`() {
+    fun generateDiff_withEmptyInputs_returnsEmptySequence() {
         assertEquals(
             expected = emptyList(),
             actual = MyersDiffAlgorithm<Nothing>(
@@ -18,7 +18,7 @@ class MyersDiffAlgorithmTest {
     }
 
     @Test
-    fun `generateDiff with empty start returns additions`() {
+    fun generateDiff_withEmptyStart_returnsAdditions() {
         assertEquals(
             expected = listOf(Insert("A"), Insert("B"), Insert("C")),
             actual = MyersDiffAlgorithm(
@@ -29,7 +29,7 @@ class MyersDiffAlgorithmTest {
     }
 
     @Test
-    fun `generateDiff with empty end returns deletions`() {
+    fun generateDiff_withEmptyEnd_returnsDeletions() {
         assertEquals(
             expected = listOf(Delete, Delete, Delete),
             actual = MyersDiffAlgorithm(
@@ -40,7 +40,7 @@ class MyersDiffAlgorithmTest {
     }
 
     @Test
-    fun `generateDiff with same start and end returns skips`() {
+    fun generateDiff_withSameStartAndEnd_returnsSkips() {
         assertEquals(
             expected = listOf(Skip, Skip, Skip, Skip),
             actual = MyersDiffAlgorithm(
@@ -51,7 +51,7 @@ class MyersDiffAlgorithmTest {
     }
 
     @Test
-    fun `generateDiff with simple example`() {
+    fun generateDiff_withSimpleExample() {
         val original = "ABCABAC".toList()
         val updated = "CBABAC".toList()
 
@@ -73,7 +73,7 @@ class MyersDiffAlgorithmTest {
     }
 
     @Test
-    fun `generateDiff with DNA example`() {
+    fun generateDiff_withDnaExample() {
         val original = "tgtcgctctcaagatggcgtcttattacgaaaggagccagtccgggttgc".toList()
         val updated = "ggctggggttttcgcacggcgctccctccgcggttgtatctcaggcgaca".toList()
 
@@ -93,7 +93,7 @@ class MyersDiffAlgorithmTest {
     }
 
     @Test
-    fun `generateDiff with lorem ipsum example`() {
+    fun generateDiff_withLoremIpsumExample() {
         val original = ("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod " +
             "tempor incididunt ut labore et dolore magna aliqua. Quis auctor elit sed vulputate " +
             "mi sit amet mauris commodo. Nec dui nunc mattis enim ut tellus elementum. Ultricies " +
