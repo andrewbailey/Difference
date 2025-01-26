@@ -1,4 +1,5 @@
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
+apply plugin: 'org.jetbrains.dokka'
 
 kotlin {
     jvm {
@@ -33,9 +34,9 @@ kotlin {
             artifactId = 'difference-macos-x64'
         }
     }
-    mingwX86 {
+    macosArm64 {
         mavenPublication {
-            artifactId = 'difference-mingw-x86'
+            artifactId = 'difference-macos-x64'
         }
     }
     mingwX64 {
@@ -78,10 +79,17 @@ kotlin {
                 implementation kotlin('test-js')
             }
         }
-        all {
-            languageSettings.enableLanguageFeature("InlineClasses")
-        }
     }
+}
+
+dokkaHtml {
+    outputDirectory = file("$rootDir/docs/1.x")
+}
+
+tasks.register('javadocJar', Jar) {
+    dependsOn dokkaHtml
+    archiveClassifier = 'javadoc'
+    from file("$rootDir/docs/1.x")
 }
 
 apply from: "$rootDir/gradle/publish.gradle"

@@ -1,8 +1,15 @@
 package dev.andrewbailey.diff
 
-import dev.andrewbailey.diff.DiffOperation.*
+import dev.andrewbailey.diff.DiffOperation.Add
+import dev.andrewbailey.diff.DiffOperation.AddAll
+import dev.andrewbailey.diff.DiffOperation.Move
+import dev.andrewbailey.diff.DiffOperation.MoveRange
+import dev.andrewbailey.diff.DiffOperation.Remove
+import dev.andrewbailey.diff.DiffOperation.RemoveRange
 import dev.andrewbailey.diff.impl.MyersDiffAlgorithm
-import dev.andrewbailey.diff.impl.MyersDiffOperation.*
+import dev.andrewbailey.diff.impl.MyersDiffOperation.Delete
+import dev.andrewbailey.diff.impl.MyersDiffOperation.Insert
+import dev.andrewbailey.diff.impl.MyersDiffOperation.Skip
 
 internal object DiffGenerator {
 
@@ -83,7 +90,8 @@ internal object DiffGenerator {
             var endIndexDifference = 0
 
             while (indexOfOppositeAction < operations.size &&
-                !canBeReducedToMove(operation, operations[indexOfOppositeAction])) {
+                !canBeReducedToMove(operation, operations[indexOfOppositeAction])
+            ) {
                 val rejectedOperation = operations[indexOfOppositeAction]
                 if (rejectedOperation is Add<T>) {
                     endIndexDifference++
@@ -123,12 +131,10 @@ internal object DiffGenerator {
     private fun <T> canBeReducedToMove(
         operation1: DiffOperation<T>,
         operation2: DiffOperation<T>
-    ): Boolean {
-        return when (operation1) {
-            is Add<T> -> operation2 is Remove<T> && operation1.item == operation2.item
-            is Remove<T> -> operation2 is Add<T> && operation1.item == operation2.item
-            else -> false
-        }
+    ): Boolean = when (operation1) {
+        is Add<T> -> operation2 is Remove<T> && operation1.item == operation2.item
+        is Remove<T> -> operation2 is Add<T> && operation1.item == operation2.item
+        else -> false
     }
 
     private fun <T> reduceSequences(
@@ -142,7 +148,8 @@ internal object DiffGenerator {
             var sequenceEndIndex = index + 1
             var sequenceLength = 1
             while (sequenceEndIndex < operations.size &&
-                operationToReduce.canBeCombinedWith(operations[sequenceEndIndex], sequenceLength)) {
+                operationToReduce.canBeCombinedWith(operations[sequenceEndIndex], sequenceLength)
+            ) {
                 sequenceEndIndex++
                 sequenceLength++
             }
@@ -167,63 +174,64 @@ internal object DiffGenerator {
         val sequenceLength = sequenceEndIndex - sequenceStartIndex
         return if (sequenceLength == 1) {
             operations[sequenceStartIndex]
-        } else when (val startOperation = operations[sequenceStartIndex]) {
-            is Remove -> {
-                RemoveRange(
-                    startIndex = startOperation.index,
-                    endIndex = startOperation.index + sequenceLength
-                )
-            }
-            is Add -> {
-                AddAll(
-                    index = startOperation.index,
-                    items = operations.subList(sequenceStartIndex, sequenceEndIndex)
-                        .asSequence()
-                        .map { operation ->
-                            require(operation is Add<T>) {
-                                "Cannot reduce $operation as part of an insert sequence because " +
-                                    "it is not an add action."
-                            }
+        } else {
+            when (val startOperation = operations[sequenceStartIndex]) {
+                is Remove -> {
+                    RemoveRange(
+                        startIndex = startOperation.index,
+                        endIndex = startOperation.index + sequenceLength
+                    )
+                }
+                is Add -> {
+                    AddAll(
+                        index = startOperation.index,
+                        items = operations.subList(sequenceStartIndex, sequenceEndIndex)
+                            .asSequence()
+                            .map { operation ->
+                                require(operation is Add<T>) {
+                                    "Cannot reduce $operation as part of an insert sequence " +
+                                        "because it is not an add action."
+                                }
 
-                            operation.item
-                        }
-                        .toList()
+                                operation.item
+                            }
+                            .toList()
+                    )
+                }
+                is Move -> {
+                    MoveRange(
+                        fromIndex = startOperation.fromIndex,
+                        toIndex = startOperation.toIndex,
+                        itemCount = sequenceLength
+                    )
+                }
+                else -> throw IllegalArgumentException(
+                    "Cannot reduce sequence starting with $startOperation"
                 )
             }
-            is Move -> {
-                MoveRange(
-                    fromIndex = startOperation.fromIndex,
-                    toIndex = startOperation.toIndex,
-                    itemCount = sequenceLength
-                )
-            }
-            else -> throw IllegalArgumentException(
-                "Cannot reduce sequence starting with $startOperation"
-            )
         }
     }
 
     private fun <T> DiffOperation<T>.canBeCombinedWith(
         otherOperation: DiffOperation<T>,
         offset: Int
-    ): Boolean {
-        return when (this) {
-            is Remove -> otherOperation is Remove && index == otherOperation.index
-            is Add -> otherOperation is Add && index + offset == otherOperation.index
-            is Move -> otherOperation is Move && when {
-                toIndex < fromIndex -> {
-                    // Move backwards case
-                    toIndex + offset == otherOperation.toIndex &&
+    ): Boolean = when (this) {
+        is Remove -> otherOperation is Remove && index == otherOperation.index
+        is Add -> otherOperation is Add && index + offset == otherOperation.index
+        is Move ->
+            otherOperation is Move &&
+                when {
+                    toIndex < fromIndex -> {
+                        // Move backwards case
+                        toIndex + offset == otherOperation.toIndex &&
                             fromIndex + offset == otherOperation.fromIndex
-                }
-                else -> {
-                    // Move forwards case
-                    toIndex == otherOperation.toIndex &&
+                    }
+                    else -> {
+                        // Move forwards case
+                        toIndex == otherOperation.toIndex &&
                             fromIndex == otherOperation.fromIndex
+                    }
                 }
-            }
-            else -> false
-        }
+        else -> false
     }
-
 }

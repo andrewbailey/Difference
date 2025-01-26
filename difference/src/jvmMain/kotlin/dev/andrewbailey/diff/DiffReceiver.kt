@@ -1,14 +1,19 @@
 package dev.andrewbailey.diff
 
-import dev.andrewbailey.diff.DiffOperation.*
+import dev.andrewbailey.diff.DiffOperation.Add
+import dev.andrewbailey.diff.DiffOperation.AddAll
+import dev.andrewbailey.diff.DiffOperation.Move
+import dev.andrewbailey.diff.DiffOperation.MoveRange
+import dev.andrewbailey.diff.DiffOperation.Remove
+import dev.andrewbailey.diff.DiffOperation.RemoveRange
 
 /**
- * This class serves as a convenience class for Java users who may find it tedious to call [DiffResult.applyDiff],
- * since Java users have to rely on Kotlin's `FunctionN` interfaces and don't have access to Kotlin's named arguments
- * and default arguments.
+ * This class serves as a convenience class for Java users who may find it tedious to call
+ * [DiffResult.applyDiff], since Java users have to rely on Kotlin's `FunctionN` interfaces and
+ * don't have access to Kotlin's named arguments and default arguments.
  *
- * If you're using Difference directly in Kotlin, then there's no reason for you to use this class since the
- * [DiffResult.applyDiff] is a more idiomatic way to use a difference result.
+ * If you're using Difference directly in Kotlin, then there's no reason for you to use this class
+ * since the [DiffResult.applyDiff] is a more idiomatic way to use a difference result.
  */
 abstract class DiffReceiver<T> {
 
@@ -53,14 +58,17 @@ abstract class DiffReceiver<T> {
         }
     }
 
-    open fun move(oldIndex: Int, newIndex: Int) {
-        throw UnsupportedOperationException("The received diff included move operations, but " +
-                "this receiver does not support moving elements. You should either disable " +
-                "movement detection when generating the diff, or override the " +
-                "`DiffReceiver.move()` function.")
-    }
+    open fun move(oldIndex: Int, newIndex: Int): Unit = throw UnsupportedOperationException(
+        "The received diff included move operations, but this receiver does not support moving " +
+            "elements. You should either disable movement detection when generating the " +
+            "diff, or override the `DiffReceiver.move()` function."
+    )
 
-    open fun moveRange(oldIndex: Int, newIndex: Int, count: Int) {
+    open fun moveRange(
+        oldIndex: Int,
+        newIndex: Int,
+        count: Int
+    ) {
         when {
             newIndex < oldIndex -> {
                 (0 until count).forEach { item ->
@@ -74,5 +82,4 @@ abstract class DiffReceiver<T> {
             }
         }
     }
-
 }

@@ -32,5 +32,4 @@ sealed class DiffOperation<T> {
         val toIndex: Int,
         val itemCount: Int
     ) : DiffOperation<T>()
-
 }

@@ -1,13 +1,18 @@
 package dev.andrewbailey.diff
 
-import dev.andrewbailey.diff.DiffOperation.*
+import dev.andrewbailey.diff.DiffOperation.Add
+import dev.andrewbailey.diff.DiffOperation.AddAll
+import dev.andrewbailey.diff.DiffOperation.Move
+import dev.andrewbailey.diff.DiffOperation.MoveRange
+import dev.andrewbailey.diff.DiffOperation.Remove
+import dev.andrewbailey.diff.DiffOperation.RemoveRange
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class DiffGeneratorTest {
 
     @Test
-    fun `generateDiff with empty input returns empty result`() {
+    fun generateDiff_withEmptyInput_returnsEmptyResult() {
         val original = emptyList<String>()
         val updated = emptyList<String>()
 
@@ -27,7 +32,7 @@ class DiffGeneratorTest {
     }
 
     @Test
-    fun `generateDiff with empty start returns additions`() {
+    fun generateDiff_withEmptyStart_returnsAdditions() {
         val original = emptyList<String>()
         val updated = listOf("A", "B", "C")
 
@@ -35,12 +40,14 @@ class DiffGeneratorTest {
 
         assertEquals(
             message = "The returned diff did not match the expected value.",
-            expected = DiffResult(listOf(
-                AddAll(
-                    index = 0,
-                    items = listOf("A", "B", "C")
+            expected = DiffResult(
+                listOf(
+                    AddAll(
+                        index = 0,
+                        items = listOf("A", "B", "C")
+                    )
                 )
-            )),
+            ),
             actual = diff
         )
 
@@ -52,7 +59,7 @@ class DiffGeneratorTest {
     }
 
     @Test
-    fun `generateDiff with empty end returns deletions`() {
+    fun generateDiff_withEmptyEnd_returnsDeletions() {
         val original = listOf("A", "B", "C")
         val updated = emptyList<String>()
 
@@ -60,12 +67,14 @@ class DiffGeneratorTest {
 
         assertEquals(
             message = "The returned diff did not match the expected value.",
-            expected = DiffResult(listOf(
-                RemoveRange(
-                    startIndex = 0,
-                    endIndex = 3
+            expected = DiffResult(
+                listOf(
+                    RemoveRange(
+                        startIndex = 0,
+                        endIndex = 3
+                    )
                 )
-            )),
+            ),
             actual = diff
         )
 
@@ -77,7 +86,7 @@ class DiffGeneratorTest {
     }
 
     @Test
-    fun `generateDiff with same start and end returns empty diff`() {
+    fun generateDiff_withSameStartAndEnd_returnsEmptyDiff() {
         val original = listOf("A", "B", "C")
         val updated = listOf("A", "B", "C")
 
@@ -97,7 +106,7 @@ class DiffGeneratorTest {
     }
 
     @Test
-    fun `generateDiff without moves calculates complex diff`() {
+    fun generateDiff_withoutMoves_calculatesComplexDiff() {
         val original = "ABCDEFGHJKLPQR".toList()
         val updated = "BCAGHIJLMNOPQR".toList()
 
@@ -109,14 +118,16 @@ class DiffGeneratorTest {
 
         assertEquals(
             message = "The returned diff did not match the expected value.",
-            expected = DiffResult(listOf(
-                Remove(index = 0, item = 'A'),
-                RemoveRange(startIndex = 2, endIndex = 5),
-                Add(index = 2, item = 'A'),
-                Add(index = 5, item = 'I'),
-                Remove(index = 7, item = 'K'),
-                AddAll(index = 8, items = "MNO".toList())
-            )),
+            expected = DiffResult(
+                listOf(
+                    Remove(index = 0, item = 'A'),
+                    RemoveRange(startIndex = 2, endIndex = 5),
+                    Add(index = 2, item = 'A'),
+                    Add(index = 5, item = 'I'),
+                    Remove(index = 7, item = 'K'),
+                    AddAll(index = 8, items = "MNO".toList())
+                )
+            ),
             actual = diff
         )
 
@@ -128,7 +139,7 @@ class DiffGeneratorTest {
     }
 
     @Test
-    fun `generateDiff detects forwards and backwards movements`() {
+    fun generateDiff_detectsForwardsAndBackwardsMovements() {
         val original = "CADEFB".toList()
         val updated = "ABCDEF".toList()
 
@@ -140,16 +151,18 @@ class DiffGeneratorTest {
 
         assertEquals(
             message = "The returned diff did not match the expected value.",
-            expected = DiffResult(listOf(
-                Move(
-                    fromIndex = 0,
-                    toIndex = 2
-                ),
-                Move(
-                    fromIndex = 5,
-                    toIndex = 1
+            expected = DiffResult(
+                listOf(
+                    Move(
+                        fromIndex = 0,
+                        toIndex = 2
+                    ),
+                    Move(
+                        fromIndex = 5,
+                        toIndex = 1
+                    )
                 )
-            )),
+            ),
             actual = diff
         )
 
@@ -161,7 +174,7 @@ class DiffGeneratorTest {
     }
 
     @Test
-    fun `generateDiff detects move forwards sequences`() {
+    fun generateDiff_detectsMoveForwardsSequences() {
         val original = "ABCDEFGHIJKL".toList()
         val updated = "ABCGHIJKLDEF".toList()
 
@@ -173,13 +186,15 @@ class DiffGeneratorTest {
 
         assertEquals(
             message = "The returned diff did not match the expected value.",
-            expected = DiffResult(listOf(
-                MoveRange(
-                    fromIndex = 3,
-                    toIndex = 12,
-                    itemCount = 3
+            expected = DiffResult(
+                listOf(
+                    MoveRange(
+                        fromIndex = 3,
+                        toIndex = 12,
+                        itemCount = 3
+                    )
                 )
-            )),
+            ),
             actual = diff
         )
 
@@ -191,7 +206,7 @@ class DiffGeneratorTest {
     }
 
     @Test
-    fun `generateDiff detects move backwards sequences`() {
+    fun generateDiff_DetectsMoveBackwardsSequences() {
         val original = "ABCDEFGHIJKL".toList()
         val updated = "HIJABCDEFGKL".toList()
 
@@ -203,13 +218,15 @@ class DiffGeneratorTest {
 
         assertEquals(
             message = "The returned diff did not match the expected value.",
-            expected = DiffResult(listOf(
-                MoveRange(
-                    fromIndex = 7,
-                    toIndex = 0,
-                    itemCount = 3
+            expected = DiffResult(
+                listOf(
+                    MoveRange(
+                        fromIndex = 7,
+                        toIndex = 0,
+                        itemCount = 3
+                    )
                 )
-            )),
+            ),
             actual = diff
         )
 
@@ -221,7 +238,7 @@ class DiffGeneratorTest {
     }
 
     @Test
-    fun `generateDiff detects adjacent moves to different destinations`() {
+    fun generateDiff_DetectsAdjacentMovesToDifferentDestinations() {
         val original = "ABCDEFGHIJKL".toList()
         val updated = "DABCGHEIJKLF".toList()
 
@@ -233,20 +250,22 @@ class DiffGeneratorTest {
 
         assertEquals(
             message = "The returned diff did not match the expected value.",
-            expected = DiffResult(listOf(
-                Move(
-                    fromIndex = 3,
-                    toIndex = 0
-                ),
-                Move(
-                    fromIndex = 4,
-                    toIndex = 8
-                ),
-                Move(
-                    fromIndex = 4,
-                    toIndex = 12
+            expected = DiffResult(
+                listOf(
+                    Move(
+                        fromIndex = 3,
+                        toIndex = 0
+                    ),
+                    Move(
+                        fromIndex = 4,
+                        toIndex = 8
+                    ),
+                    Move(
+                        fromIndex = 4,
+                        toIndex = 12
+                    )
                 )
-            )),
+            ),
             actual = diff
         )
 
@@ -258,7 +277,7 @@ class DiffGeneratorTest {
     }
 
     @Test
-    fun `generateDiff with moves excludes opposite operations from merging`() {
+    fun generateDiff_withMoves_excludesOppositeOperationsFromMerging() {
         val original = listOf(3, 2, 3, 0, 0, 3, 1, 0, 1, 2)
         val updated = listOf(1, 3, 2, 0, 12, 0, 15, 0, 1, 2, 3)
 
@@ -270,28 +289,30 @@ class DiffGeneratorTest {
 
         assertEquals(
             message = "The returned diff did not match the expected value.",
-            expected = DiffResult(listOf(
-                Move(
-                    fromIndex = 6,
-                    toIndex = 0
-                ),
-                Move(
-                    fromIndex = 3,
-                    toIndex = 10
-                ),
-                Add(
-                    index = 4,
-                    item = 12
-                ),
-                Remove(
-                    index = 6,
-                    item = 3
-                ),
-                Add(
-                    index = 6,
-                    item = 15
+            expected = DiffResult(
+                listOf(
+                    Move(
+                        fromIndex = 6,
+                        toIndex = 0
+                    ),
+                    Move(
+                        fromIndex = 3,
+                        toIndex = 10
+                    ),
+                    Add(
+                        index = 4,
+                        item = 12
+                    ),
+                    Remove(
+                        index = 6,
+                        item = 3
+                    ),
+                    Add(
+                        index = 6,
+                        item = 15
+                    )
                 )
-            )),
+            ),
             actual = diff
         )
 
@@ -302,8 +323,8 @@ class DiffGeneratorTest {
         )
     }
 
-    private fun <T> applyDiff(original: List<T>, diff: DiffResult<T>): List<T> {
-        return original.toMutableList().apply {
+    private fun <T> applyDiff(original: List<T>, diff: DiffResult<T>): List<T> =
+        original.toMutableList().apply {
             diff.applyDiff(
                 remove = { index -> removeAt(index) },
                 insert = { item, index -> add(index, item) },
@@ -319,6 +340,4 @@ class DiffGeneratorTest {
                 }
             )
         }
-    }
-
 }

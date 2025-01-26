@@ -1,6 +1,8 @@
 package dev.andrewbailey.diff.impl
 
-import dev.andrewbailey.diff.impl.MyersDiffOperation.*
+import dev.andrewbailey.diff.impl.MyersDiffOperation.Delete
+import dev.andrewbailey.diff.impl.MyersDiffOperation.Insert
+import dev.andrewbailey.diff.impl.MyersDiffOperation.Skip
 import kotlin.math.ceil
 
 /**
@@ -36,17 +38,15 @@ internal class MyersDiffAlgorithm<T>(
     private val updated: List<T>
 ) {
 
-    fun generateDiff(): Sequence<MyersDiffOperation<T>> {
-        return walkSnakes()
-            .asSequence()
-            .map { (x1, y1, x2, y2) ->
-                when {
-                    x1 == x2 -> Insert(value = updated[y1])
-                    y1 == y2 -> Delete
-                    else -> Skip
-                }
+    fun generateDiff(): Sequence<MyersDiffOperation<T>> = walkSnakes()
+        .asSequence()
+        .map { (x1, y1, x2, y2) ->
+            when {
+                x1 == x2 -> Insert(value = updated[y1])
+                y1 == y2 -> Delete
+                else -> Skip
             }
-    }
+        }
 
     private fun walkSnakes(): List<Region> {
         val path = findPath()
@@ -112,34 +112,34 @@ internal class MyersDiffAlgorithm<T>(
                 snakes += snake
                 val (start, finish) = snake
 
-                stack.push(region.copy(
-                    right = start.x,
-                    bottom = start.y
-                ))
+                stack.push(
+                    region.copy(
+                        right = start.x,
+                        bottom = start.y
+                    )
+                )
 
-                stack.push(region.copy(
-                    left = finish.x,
-                    top = finish.y
-                ))
+                stack.push(
+                    region.copy(
+                        left = finish.x,
+                        top = finish.y
+                    )
+                )
             }
         }
 
         snakes.sortWith(object : Comparator<Snake> {
-            override fun compare(a: Snake, b: Snake): Int {
-                return if (a.start.x == b.start.x) {
-                    a.start.y - b.start.y
-                } else {
-                    a.start.x - b.start.x
-                }
+            override fun compare(a: Snake, b: Snake): Int = if (a.start.x == b.start.x) {
+                a.start.y - b.start.y
+            } else {
+                a.start.x - b.start.x
             }
         })
 
         return snakes
     }
 
-    private fun midpoint(
-        region: Region
-    ): Snake? {
+    private fun midpoint(region: Region): Snake? {
         if (region.size == 0) {
             return null
         }
@@ -185,8 +185,10 @@ internal class MyersDiffAlgorithm<T>(
             var endY = region.top + (endX - region.left) - k
             val startY = if (depth == 0 || endX != startX) endY else endY - 1
 
-            while (endX < region.right && endY < region.bottom &&
-                original[endX] == updated[endY]) {
+            while (endX < region.right &&
+                endY < region.bottom &&
+                original[endX] == updated[endY]
+            ) {
                 endX++
                 endY++
             }
@@ -232,8 +234,10 @@ internal class MyersDiffAlgorithm<T>(
             var startX = region.left + (startY - region.top) + k
             val endX = if (depth == 0 || startY != endY) startX else startX + 1
 
-            while (startX > region.left && startY > region.top &&
-                original[startX - 1] == updated[startY - 1]) {
+            while (startX > region.left &&
+                startY > region.top &&
+                original[startX - 1] == updated[startY - 1]
+            ) {
                 startX--
                 startY--
             }
@@ -252,5 +256,4 @@ internal class MyersDiffAlgorithm<T>(
 
         return null
     }
-
 }

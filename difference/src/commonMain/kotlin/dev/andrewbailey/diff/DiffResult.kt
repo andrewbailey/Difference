@@ -1,8 +1,6 @@
 package dev.andrewbailey.diff
 
-class DiffResult<T> internal constructor(
-    val operations: List<DiffOperation<T>>
-) {
+class DiffResult<T> internal constructor(val operations: List<DiffOperation<T>>) {
 
     inline fun applyDiff(
         crossinline remove: (index: Int) -> Unit,
@@ -72,13 +70,9 @@ class DiffResult<T> internal constructor(
         }
     }
 
-    override fun equals(other: Any?) =
-        other is DiffResult<*> && other.operations == operations
+    override fun equals(other: Any?) = other is DiffResult<*> && other.operations == operations
 
-    override fun hashCode() =
-        operations.hashCode()
+    override fun hashCode() = operations.hashCode()
 
-    override fun toString() =
-        "DiffResult(operations = $operations)"
-
+    override fun toString() = "DiffResult(operations = $operations)"
 }

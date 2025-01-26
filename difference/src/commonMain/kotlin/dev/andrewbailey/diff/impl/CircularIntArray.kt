@@ -1,14 +1,13 @@
 package dev.andrewbailey.diff.impl
 
-internal inline class CircularIntArray(
-    val array: IntArray
-) {
+import kotlin.jvm.JvmInline
+
+@JvmInline
+internal value class CircularIntArray(private val array: IntArray) {
 
     constructor(size: Int) : this(IntArray(size))
 
-    operator fun get(index: Int): Int {
-        return array[toInternalIndex(index)]
-    }
+    operator fun get(index: Int): Int = array[toInternalIndex(index)]
 
     operator fun set(index: Int, value: Int) {
         array[toInternalIndex(index)] = value
@@ -22,5 +21,4 @@ internal inline class CircularIntArray(
             moddedIndex
         }
     }
-
 }

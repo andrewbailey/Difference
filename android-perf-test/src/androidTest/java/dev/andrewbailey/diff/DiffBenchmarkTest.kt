@@ -104,10 +104,7 @@ class DiffBenchmarkTest {
         }
     }
 
-    private fun generateList(
-        numberOfItems: Int,
-        seed: Long
-    ): List<Int> {
+    private fun generateList(numberOfItems: Int, seed: Long): List<Int> {
         val random = Random(seed)
         return List(numberOfItems) { random.nextInt() }
     }
@@ -147,5 +144,4 @@ class DiffBenchmarkTest {
 
         return modifiedList
     }
-
 }
