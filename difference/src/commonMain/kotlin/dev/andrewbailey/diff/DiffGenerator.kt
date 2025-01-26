@@ -10,6 +10,7 @@ import dev.andrewbailey.diff.impl.MyersDiffAlgorithm
 import dev.andrewbailey.diff.impl.MyersDiffOperation.Delete
 import dev.andrewbailey.diff.impl.MyersDiffOperation.Insert
 import dev.andrewbailey.diff.impl.MyersDiffOperation.Skip
+import dev.andrewbailey.diff.impl.fastForEach
 
 internal object DiffGenerator {
 
@@ -18,14 +19,12 @@ internal object DiffGenerator {
         updated: List<T>,
         detectMoves: Boolean
     ): DiffResult<T> {
-        val diff = MyersDiffAlgorithm(original, updated)
-            .generateDiff()
+        val diff = MyersDiffAlgorithm(original, updated).generateDiff()
 
         var index = 0
         var indexInOriginalSequence = 0
         val operations = mutableListOf<DiffOperation<T>>()
-
-        diff.forEach { operation ->
+        diff.fastForEach { operation ->
             when (operation) {
                 is Insert -> {
                     operations += Add(
@@ -48,13 +47,9 @@ internal object DiffGenerator {
             }
         }
 
-        if (detectMoves) {
-            reduceDeletesAndAddsToMoves(operations)
-        }
-
-        return DiffResult(
-            operations = reduceSequences(operations)
-        )
+        if (detectMoves) reduceDeletesAndAddsToMoves(operations)
+        reduceSequences(operations)
+        return DiffResult(operations)
     }
 
     /**
@@ -81,10 +76,6 @@ internal object DiffGenerator {
         var index = 0
         while (index < operations.size) {
             val operation = operations[index]
-
-            check(operation is Add<T> || operation is Remove<T>) {
-                "Only add and remove operations should appear in the diff"
-            }
 
             var indexOfOppositeAction = index + 1
             var endIndexDifference = 0
@@ -137,10 +128,7 @@ internal object DiffGenerator {
         else -> false
     }
 
-    private fun <T> reduceSequences(
-        operations: MutableList<DiffOperation<T>>
-    ): List<DiffOperation<T>> {
-        val result = mutableListOf<DiffOperation<T>>()
+    private fun <T> reduceSequences(operations: MutableList<DiffOperation<T>>) {
         var index = 0
 
         while (index < operations.size) {
@@ -154,62 +142,49 @@ internal object DiffGenerator {
                 sequenceLength++
             }
 
-            result += reduceSequence(
-                operations = operations,
-                sequenceStartIndex = index,
-                sequenceEndIndex = sequenceEndIndex
-            )
+            if (sequenceLength > 1) {
+                operations[index] = reduceSequence(
+                    operations = operations,
+                    sequenceStartIndex = index,
+                    sequenceLength = sequenceLength
+                )
 
-            index += sequenceLength
+                repeat(sequenceLength - 1) { operations.removeAt(index + 1) }
+            }
+
+            index++
         }
-
-        return result
     }
 
     private fun <T> reduceSequence(
         operations: MutableList<DiffOperation<T>>,
         sequenceStartIndex: Int,
-        sequenceEndIndex: Int
-    ): DiffOperation<T> {
-        val sequenceLength = sequenceEndIndex - sequenceStartIndex
-        return if (sequenceLength == 1) {
-            operations[sequenceStartIndex]
-        } else {
-            when (val startOperation = operations[sequenceStartIndex]) {
-                is Remove -> {
-                    RemoveRange(
-                        startIndex = startOperation.index,
-                        endIndex = startOperation.index + sequenceLength
-                    )
-                }
-                is Add -> {
-                    AddAll(
-                        index = startOperation.index,
-                        items = operations.subList(sequenceStartIndex, sequenceEndIndex)
-                            .asSequence()
-                            .map { operation ->
-                                require(operation is Add<T>) {
-                                    "Cannot reduce $operation as part of an insert sequence " +
-                                        "because it is not an add action."
-                                }
-
-                                operation.item
-                            }
-                            .toList()
-                    )
-                }
-                is Move -> {
-                    MoveRange(
-                        fromIndex = startOperation.fromIndex,
-                        toIndex = startOperation.toIndex,
-                        itemCount = sequenceLength
-                    )
-                }
-                else -> throw IllegalArgumentException(
-                    "Cannot reduce sequence starting with $startOperation"
-                )
-            }
+        sequenceLength: Int
+    ): DiffOperation<T> = when (val startOperation = operations[sequenceStartIndex]) {
+        is Remove -> {
+            RemoveRange(
+                startIndex = startOperation.index,
+                endIndex = startOperation.index + sequenceLength
+            )
         }
+        is Add -> {
+            AddAll(
+                index = startOperation.index,
+                items = List(sequenceLength) { i ->
+                    (operations[sequenceStartIndex + i] as Add<T>).item
+                }
+            )
+        }
+        is Move -> {
+            MoveRange(
+                fromIndex = startOperation.fromIndex,
+                toIndex = startOperation.toIndex,
+                itemCount = sequenceLength
+            )
+        }
+        else -> throw IllegalArgumentException(
+            "Cannot reduce sequence starting with $startOperation"
+        )
     }
 
     private fun <T> DiffOperation<T>.canBeCombinedWith(

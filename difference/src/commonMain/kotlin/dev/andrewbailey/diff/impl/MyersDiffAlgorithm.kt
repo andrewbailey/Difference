@@ -38,21 +38,11 @@ internal class MyersDiffAlgorithm<T>(
     private val updated: List<T>
 ) {
 
-    fun generateDiff(): Sequence<MyersDiffOperation<T>> = walkSnakes()
-        .asSequence()
-        .map { (x1, y1, x2, y2) ->
-            when {
-                x1 == x2 -> Insert(value = updated[y1])
-                y1 == y2 -> Delete
-                else -> Skip
-            }
-        }
-
-    private fun walkSnakes(): List<Region> {
+    fun generateDiff(): List<MyersDiffOperation<T>> {
         val path = findPath()
+        val regions = mutableListOf<MyersDiffOperation<T>>()
 
-        val regions = mutableListOf<Region>()
-        path.forEach { (p1, p2) ->
+        path.fastForEach { (p1, p2) ->
             var (x1, y1) = walkDiagonal(p1, p2, regions)
             val (x2, y2) = p2
 
@@ -60,11 +50,11 @@ internal class MyersDiffAlgorithm<T>(
             val dX = x2 - x1
             when {
                 dY > dX -> {
-                    regions += Region(x1, y1, x1, y1 + 1)
+                    regions += interpretRegion(x1, y1, x1, y1 + 1)
                     y1++
                 }
                 dY < dX -> {
-                    regions += Region(x1, y1, x1 + 1, y1)
+                    regions += interpretRegion(x1, y1, x1 + 1, y1)
                     x1++
                 }
             }
@@ -78,17 +68,28 @@ internal class MyersDiffAlgorithm<T>(
     private fun walkDiagonal(
         start: Point,
         end: Point,
-        regionsOutput: MutableList<Region>
+        regionsOutput: MutableList<MyersDiffOperation<T>>
     ): Point {
         var (x1, y1) = start
         val (x2, y2) = end
         while (x1 < x2 && y1 < y2 && original[x1] == updated[y1]) {
-            regionsOutput += Region(x1, y1, x1 + 1, y1 + 1)
+            regionsOutput += interpretRegion(x1, y1, x1 + 1, y1 + 1)
             x1++
             y1++
         }
 
         return Point(x1, y1)
+    }
+
+    private fun interpretRegion(
+        x1: Int,
+        y1: Int,
+        x2: Int,
+        y2: Int
+    ): MyersDiffOperation<T> = when {
+        x1 == x2 -> Insert(value = updated[y1])
+        y1 == y2 -> Delete
+        else -> Skip
     }
 
     private fun findPath(): List<Snake> {
@@ -128,14 +129,7 @@ internal class MyersDiffAlgorithm<T>(
             }
         }
 
-        snakes.sortWith(object : Comparator<Snake> {
-            override fun compare(a: Snake, b: Snake): Int = if (a.start.x == b.start.x) {
-                a.start.y - b.start.y
-            } else {
-                a.start.x - b.start.x
-            }
-        })
-
+        snakes.sort()
         return snakes
     }
 

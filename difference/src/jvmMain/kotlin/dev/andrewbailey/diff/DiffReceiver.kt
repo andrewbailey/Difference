@@ -6,6 +6,8 @@ import dev.andrewbailey.diff.DiffOperation.Move
 import dev.andrewbailey.diff.DiffOperation.MoveRange
 import dev.andrewbailey.diff.DiffOperation.Remove
 import dev.andrewbailey.diff.DiffOperation.RemoveRange
+import dev.andrewbailey.diff.impl.fastForEach
+import dev.andrewbailey.diff.impl.fastForEachIndexed
 
 /**
  * This class serves as a convenience class for Java users who may find it tedious to call
@@ -18,7 +20,7 @@ import dev.andrewbailey.diff.DiffOperation.RemoveRange
 abstract class DiffReceiver<T> {
 
     fun applyDiff(diff: DiffResult<T>) {
-        diff.operations.forEach { operation ->
+        diff.operations.fastForEach { operation ->
             when (operation) {
                 is Remove -> {
                     remove(operation.index)
@@ -53,7 +55,7 @@ abstract class DiffReceiver<T> {
     abstract fun insert(item: T, index: Int)
 
     open fun insertAll(items: List<T>, index: Int) {
-        items.forEachIndexed { itemIndex, item ->
+        items.fastForEachIndexed { itemIndex, item ->
             insert(item, index + itemIndex)
         }
     }

@@ -131,7 +131,7 @@ class MyersDiffAlgorithmTest {
         )
     }
 
-    private fun <T> applyDiff(original: List<T>, diff: Sequence<MyersDiffOperation<T>>): List<T> =
+    private fun <T> applyDiff(original: List<T>, diff: List<MyersDiffOperation<T>>): List<T> =
         original.toMutableList().apply {
             var index = 0
             diff.forEach { operation ->
