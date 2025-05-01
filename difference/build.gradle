@@ -24,6 +24,11 @@ kotlin {
             artifactId = 'difference-ios-arm64'
         }
     }
+    iosSimulatorArm64 {
+        mavenPublication {
+            artifactId = 'difference-ios-simulator-arm64'
+        }
+    }
     linuxX64 {
         mavenPublication {
             artifactId = 'difference-linux-x64'
