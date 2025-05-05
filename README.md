@@ -13,20 +13,21 @@ To use the universal dependency, add this dependency to your module's `build.gra
 
 ```groovy
 dependencies {
-    implementation 'dev.andrewbailey.difference:difference:1.1.0'
+    implementation 'dev.andrewbailey.difference:difference:1.1.1'
 }
 ```
 
 If you want to explicitly specify which platform variant of the library you want to depend on, you can use any of the following dependencies as appropriate:
 
 ```
-dev.andrewbailey.difference:difference-jvm:1.1.0
-dev.andrewbailey.difference:difference-js:1.1.0
-dev.andrewbailey.difference:difference-linux-x64:1.1.0
-dev.andrewbailey.difference:difference-macos-x64:1.1.0
-dev.andrewbailey.difference:difference-ios-x64:1.1.0
-dev.andrewbailey.difference:difference-ios-arm64:1.1.0
-dev.andrewbailey.difference:difference-mingw-x64:1.1.0
+dev.andrewbailey.difference:difference-jvm:1.1.1
+dev.andrewbailey.difference:difference-js:1.1.1
+dev.andrewbailey.difference:difference-linux-x64:1.1.1
+dev.andrewbailey.difference:difference-macos-x64:1.1.1
+dev.andrewbailey.difference:difference-ios-x64:1.1.1
+dev.andrewbailey.difference:difference-ios-arm64:1.1.1
+dev.andrewbailey.difference:difference-ios-simulator-arm64:1.1.1
+dev.andrewbailey.difference:difference-mingw-x64:1.1.1
 ```
 
 ## Generating a diff
