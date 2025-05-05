@@ -41,7 +41,7 @@ kotlin {
     }
     macosArm64 {
         mavenPublication {
-            artifactId = 'difference-macos-x64'
+            artifactId = 'difference-macos-arm64'
         }
     }
     mingwX64 {

@@ -24,6 +24,7 @@ dev.andrewbailey.difference:difference-jvm:1.1.1
 dev.andrewbailey.difference:difference-js:1.1.1
 dev.andrewbailey.difference:difference-linux-x64:1.1.1
 dev.andrewbailey.difference:difference-macos-x64:1.1.1
+dev.andrewbailey.difference:difference-macos-arm64:1.1.1
 dev.andrewbailey.difference:difference-ios-x64:1.1.1
 dev.andrewbailey.difference:difference-ios-arm64:1.1.1
 dev.andrewbailey.difference:difference-ios-simulator-arm64:1.1.1
